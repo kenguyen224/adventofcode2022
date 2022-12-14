@@ -9,6 +9,7 @@ import java.io.File
 
 fun main() {
     partOne()
+    partTwo()
 }
 
 val itemPriority = mutableMapOf<String, Int>().also {
@@ -31,7 +32,7 @@ fun partOne() {
         val firstCompartment = line.substring(0, length / 2)
         val secondCompartment = line.substring(length / 2, length).toSet()
 
-        firstCompartment.forEach label@ { item ->
+        firstCompartment.forEach label@{ item ->
             if (secondCompartment.contains(item)) {
                 sumOfPriorities += (itemPriority[item.toString()] ?: 0)
                 return@forEach
@@ -39,4 +40,26 @@ fun partOne() {
         }
     }
     println("Result part one is: $sumOfPriorities")
+}
+
+fun partTwo() {
+    val file = File("src/main/kotlin/day3/input.txt")
+    var sumOfPriorities = 0
+    val tempLines = mutableListOf<Set<Char>>()
+    file.useLines { it.toList() }.forEach { line ->
+        if (tempLines.size < 3) {
+            tempLines.add(line.toSet())
+        }
+        if (tempLines.size == 3) {
+            tempLines[0].forEach label@{ item ->
+                if (tempLines[1].contains(item) && tempLines[2].contains(item)) {
+                    sumOfPriorities += (itemPriority[item.toString()] ?: 0)
+                    tempLines.clear()
+                    return@forEach
+                }
+            }
+            tempLines.clear()
+        }
+    }
+    println("Result part two is: $sumOfPriorities")
 }
